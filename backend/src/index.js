@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 
 const consultantsRouter = require('./routes/consultants');
 const projectsRouter = require('./routes/projects');
@@ -19,6 +20,11 @@ app.use('/api/dashboard', dashboardRouter);
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
-app.listen(PORT, () => {
-  console.log(`Backend running on http://localhost:${PORT}`);
+// Serve React static build
+const buildPath = path.join(__dirname, '../../frontend/build');
+app.use(express.static(buildPath));
+app.get('*', (req, res) => res.sendFile(path.join(buildPath, 'index.html')));
+
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on http://0.0.0.0:${PORT}`);
 });
